@@ -45,7 +45,7 @@ def regulate_filters(result):
                 # There's a chance a letter appears 2 times, one in a correct position
                 # and once in a wrong position, so we need to remove it from all the
                 # position except the one that's it's correct
-                if(res[0] != 'correct'): filters[j].add(res[0])
+                if(res[1] != 'correct'): filters[j].add(res[0])
 
 def generate_regex():
     global filters
