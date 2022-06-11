@@ -1,5 +1,4 @@
-from warnings import filterwarnings
-from selenium.webdriver.chrome.options import Options as Chrome_Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 from selenium import webdriver
@@ -140,7 +139,7 @@ def main():
     # Tries maximum 6 words, break the loop if the word is correct
     for i in range(6):
         # Types and submits the word, the first word will always be 'steam'
-        try_word(browser, find_word(generate_regex()) if i != 0 else 'steam')
+        try_word(browser, word := find_word(generate_regex()) if i != 0 else 'steam')
 
         # Necessary to wait for the page to load because of animations
         # implicitly_wait didn't do the job
@@ -150,7 +149,7 @@ def main():
         result = find_result(browser, i + 1)
 
         if [res[1] == 'correct' for res in result] == [True] * 5:
-            print(f'Iteration {i + 1} is correct\nThe word was {"".join([res[0] for res in result])}')
+            print(f'Iteration {i + 1} is correct\nThe word was {word}')
             break
 
         regulate_filters(result)
