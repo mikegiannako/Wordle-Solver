@@ -47,31 +47,31 @@ def regulate_filters(result):
                 if(result[j][1] != 'correct'): 
                     filters[j].add(res[0])
 
+# Generate the regex by creating a pattern that will recognize 5 letter words and for each letter
+# we add all the ones that *aren't* legal to use. In case we have found the correct letter we just
+# add every other letter except the correct one.
 def generate_regex():
     global filters
 
     regex = ''
-    for filter in filters:
-        regex += f'[^{"".join(filter)}]' if len(filter) > 0 else '.'
+    for filt in filters:
+        regex += f'[^{"".join(filt)}]' if len(filt) > 0 else '.'
     
     return regex
 
-def find_result(browser, iteration):
-    # Find the state of the letters in the #iteration line and returns them in
-    # a list like such: [('s', 'absent'), ('t', 'absent'), ('e', 'absent'), ('a', 'correct'), ('m', 'absent')]
-
-    result: WebElement = browser.execute_script(f"""
-                                    return document
-                                    .querySelector('game-app')
-                                    .shadowRoot
-                                    .querySelector('#game')
-                                    .querySelector('#board-container')
-                                    .querySelector('game-row:nth-child({iteration})')
-                                    .shadowRoot
-                                    .querySelector('div.row')
-                                    """)
+# Find the state of the letters in the #iteration line and returns them in
+# a list like such: [('s', 'absent'), ('t', 'absent'), ('e', 'absent'), ('a', 'correct'), ('m', 'absent')]
+def find_row_state(browser: WebElement, iteration):
     
-    return re.findall(r'letter="([a-z])" evaluation="(absent|correct|present)"',result.get_property('innerHTML'))
+    # Gets all the rows of the board and selects the one that was just submitted and evaluated
+    result : WebElement = browser.find_elements_by_class_name("Row-module_row__dEHfN")[iteration]
+    
+    # Creates a list with all the letters/tiles of the selected row
+    tiles = result.find_elements_by_class_name("Tile-module_tile__3ayIZ")
+
+    # the 'innerHTML' property is a more convenient way of getting the text of the WebElement in this situation
+    # the attribute 'data-state' gives as the information about the tile state ('absent', 'correct', 'present')
+    return [(tile.get_property('innerHTML'), tile.get_attribute('data-state')) for tile in tiles]
 
 def try_word(browser, word):
     # Finding the text area (which is virtually anywhere)
@@ -101,14 +101,8 @@ def find_word(regex):
         print(generate_regex(), present)
         quit()
 
-def save_image(browser):
-    browser.execute_script(f"""
-                        return document
-                        .querySelector('game-app')
-                        .shadowRoot
-                        .querySelector('#game')
-                        .querySelector('#board-container')
-                        """).screenshot('wordle.png')
+def save_image(browser : WebElement):
+    browser.find_element_by_class_name('Board-module_board__lbzlf').screenshot('wordle.png')
 
 def main():
     # You should add a "driver_path" file with the path to your chromedriver.exe
@@ -146,14 +140,16 @@ def main():
         sleep(3)
 
         # Getting the result of the word typed
-        result = find_result(browser, i + 1)
+        result = find_row_state(browser, i)
 
         if [res[1] == 'correct' for res in result] == [True] * 5:
             print(f'Iteration {i + 1} is correct\nThe word was {word}')
             break
 
+        # Adjusting the regex based on the results we just got from the most recent word
         regulate_filters(result)
 
+    # Saves the completed puzzle as an image to a file named 'wordle.png' in the current directory
     save_image(browser)
 
 if __name__ == '__main__':
