@@ -127,8 +127,9 @@ def main():
     # and clicking it
     reject_button.click()
 
+    browser.implicitly_wait(2)
     # Clicking anywhere for the tutorial to disappear
-    browser.find_element_by_css_selector('body').click()
+    browser.find_element_by_xpath('//*[@id="wordle-app-game"]/div[3]/div/div').click()
 
     # Tries maximum 6 words, break the loop if the word is correct
     for i in range(6):
