@@ -1,19 +1,16 @@
-def get_words():
-    # Read the text from:
-    # https://gist.githubusercontent.com/dracos/dd0668f281e685bad51479e5acaadb93/raw/ca9018b32e963292473841fb55fd5a62176769b5/valid-wordle-words.txt 
-    # and store it in a variable called words using bs4
+class WordScrapper:
+    '''This class is used to scrape a basic word file from a website'''
+    def __init__(self, url: str) -> None:
+        self.url = url
 
-    from bs4 import BeautifulSoup
-    from urllib.request import urlopen
+    def get_words(self) -> list[str]:
+        from bs4 import BeautifulSoup
+        from urllib.request import urlopen
 
-    url = 'https://gist.githubusercontent.com/dracos/dd0668f281e685bad51479e5acaadb93/raw/ca9018b32e963292473841fb55fd5a62176769b5/valid-wordle-words.txt'
-    html = urlopen(url)
-    soup = BeautifulSoup(html, 'html.parser')
-
-    words = soup.get_text().split('\n')
-
-    return words
-
+        html = urlopen(self.url)
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        return soup.get_text().split('\n')
 
 if __name__ == '__main__':
     print("Please run solver.py")
