@@ -9,13 +9,14 @@ from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
 import re
 import random
+import string
 
 # Gets the words from the website specified in word_scrapper.py
 from word_scrapper import WordScrapper
 words : list[str] = WordScrapper("https://gist.githubusercontent.com/dracos/dd0668f281e685bad51479e5acaadb93/raw/ca9018b32e963292473841fb55fd5a62176769b5/valid-wordle-words.txt").get_words()
 
 # set of letters
-letters  = 'abcdefghijklmnopqrstuvwxyz'
+letters  = string.ascii_lowercase
 
 # List of a set of characters that can't be used for every letter of the word
 filters : list[set[str]] = [set(), set(), set(), set(), set()]
