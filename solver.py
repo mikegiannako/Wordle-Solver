@@ -69,10 +69,10 @@ def generate_regex() -> str:
 def find_row_state(browser: WebDriver, iteration : int) -> list[tuple[str, str]]:
     
     # Gets all the rows of the board and selects the one that was just submitted and evaluated
-    result : WebElement = browser.find_elements(By.CLASS_NAME, "Row-module_row__dEHfN")[iteration]
+    result : WebElement = browser.find_elements(By.CLASS_NAME, "Row-module_row__pwpBq")[iteration]
     
     # Creates a list with all the letters/tiles of the selected row
-    tiles : list[WebElement] = result.find_elements(By.CLASS_NAME, "Tile-module_tile__3ayIZ")
+    tiles : list[WebElement] = result.find_elements(By.CLASS_NAME, "Tile-module_tile__UWEHN")
 
     # the 'innerHTML' property is a more convenient way of getting the text of the WebElement in this situation
     # the attribute 'data-state' gives as the information about the tile state ('absent', 'correct', 'present')
@@ -108,7 +108,7 @@ def find_word(regex : str) -> str:
         quit()
 
 def save_image(browser : WebDriver) -> None:
-    browser.find_element(By.CLASS_NAME, 'Board-module_board__lbzlf').screenshot('wordle.png')
+    browser.find_element(By.CLASS_NAME, 'Board-module_board__jeoPS').screenshot('wordle.png')
 
 def main() -> None:
     # You should add a "driver_path" file with the path to your chromedriver.exe
