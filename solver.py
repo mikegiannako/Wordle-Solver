@@ -146,7 +146,7 @@ def main() -> None:
     # Tries 6 words, break the loop if the word is correct
     for i in range(6):
         # Types and submits the word, the first word will always be 'steam'
-        try_word(browser, word := find_word(generate_regex()) if i != 0 else 'steam')
+        try_word(browser, word := find_word(generate_regex()) if i != 0 else 'adieu')
 
         # Necessary to wait for the page to load because of animations
         # implicitly_wait didn't do the job
