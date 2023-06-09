@@ -136,6 +136,14 @@ def main() -> None:
     reject_button.click()
 
     browser.implicitly_wait(2)
+
+    # Clicking on the play button
+    play_button = browser.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[3]/button[2]')
+    # and clicking it
+    play_button.click()
+
+    browser.implicitly_wait(2)
+
     # Clicking on the X button to close the popup
     browser.find_element(By.XPATH, '/html/body/div[1]/div/dialog/div/button').click()
 
