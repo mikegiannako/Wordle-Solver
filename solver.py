@@ -5,7 +5,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+# import chromedriver_autoinstaller
 from time import sleep
 import re
 import random
@@ -116,19 +116,36 @@ def main() -> None:
         driver_path = f.readlines()[0].strip()
 
 
-    options : Options = webdriver.ChromeOptions() 
-    options.add_experimental_option("excludeSwitches", ["enable-logging"])
+    # Downloads the chromedriver.exe if 
+    # chromedriver_autoinstaller.install()
 
-    # Creating a Service object to run the driver in the background
+    # Setting the options for the browser
+    options = Options()
+    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    # Disabling the notifications
+    options.add_argument("--disable-notifications")
+    # Disable cert errors
+    options.add_argument('--ignore-certificate-errors')
+    
+    # Setting the service for the browser
+    service = Service(driver_path)
 
     # Initializing the browser
-    browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    browser = webdriver.Chrome(service=service, options=options)
     # Entering the website
     browser.get('https://www.nytimes.com/games/wordle/')
     # Maximizing the browser window
     browser.maximize_window()
     # Waiting for the page to load
     browser.implicitly_wait(2)
+
+    # If there's a popup about the new terms of service, we close it
+    try:
+        browser.find_element(By.XPATH, '/html/body/div[2]/div/div/button').click()
+        browser.implicitly_wait(2)
+    except:
+        pass
+
 
     # Finding the reject cookies button
     reject_button = browser.find_element(By.XPATH, '//*[@id="pz-gdpr-btn-reject"]')
@@ -172,6 +189,9 @@ def main() -> None:
 
     # Saves the completed puzzle as an image to a file named 'wordle.png' in the current directory
     save_image(browser)
+
+    # Closes the browser
+    browser.quit()
 
 if __name__ == '__main__':
     main()
