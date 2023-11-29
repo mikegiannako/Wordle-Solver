@@ -91,7 +91,7 @@ def try_word(browser : WebDriver, word : str) -> None:
 def find_word(regex : str) -> str:
     global words
 
-    # compiles the regex
+    # compiles the regex 
     r = re.compile(regex)
     
     # filters the words that don't match the regex
@@ -147,15 +147,18 @@ def main() -> None:
         pass
 
 
-    # Finding the reject cookies button
-    reject_button = browser.find_element(By.XPATH, '//*[@id="pz-gdpr-btn-reject"]')
-    # and clicking it
-    reject_button.click()
-
+    try:
+        # Finding the reject cookies button
+        reject_button = browser.find_element(By.XPATH, '//*[@id="pz-gdpr-btn-reject"]')
+        # and clicking it
+        reject_button.click()
+    except:
+        pass
+    
     browser.implicitly_wait(2)
 
     # Clicking on the play button
-    play_button = browser.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div[3]/button[2]')
+    play_button = browser.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div/div[2]/button[2]')
     # and clicking it
     play_button.click()
 
