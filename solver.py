@@ -165,7 +165,7 @@ def main() -> None:
     browser.implicitly_wait(2)
 
     # Clicking on the X button to close the popup
-    browser.find_element(By.XPATH, '/html/body/div[1]/div/dialog/div/button').click()
+    browser.find_element(By.XPATH, '//*[@id="help-dialog"]/div/div/button').click()
 
     # Waiting for the page to load
     sleep(2) # I had to put sleep instead of implicit wait because the implicit
