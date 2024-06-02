@@ -158,7 +158,7 @@ def main() -> None:
     browser.implicitly_wait(2)
 
     # Clicking on the play button
-    play_button = browser.find_element(By.XPATH, '/html/body/div[1]/div/div/div/div/div[2]/button[2]')
+    play_button = browser.find_element(By.XPATH, '/html/body/div[2]/div/div/div/div/div[2]/button[2]')
     # and clicking it
     play_button.click()
 
