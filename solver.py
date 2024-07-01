@@ -10,16 +10,18 @@ from time import sleep
 import re
 import random
 import string
+import argparse
 
 # Gets the words from the website specified in word_scrapper.py
 from word_scrapper import WordScrapper
-words : list[str] = WordScrapper("https://gist.githubusercontent.com/dracos/dd0668f281e685bad51479e5acaadb93/raw/ca9018b32e963292473841fb55fd5a62176769b5/valid-wordle-words.txt").get_words()
+words : list[str] = []
 
 # set of letters
 letters  = string.ascii_lowercase
 
 # List of a set of characters that can't be used for every letter of the word
 filters : list[set[str]] = [set(), set(), set(), set(), set()]
+found_letters : list[str] = ['', '', '', '', '']
 
 # List of letters that need to exist in the string
 present : set[str] = set()
@@ -36,6 +38,7 @@ def regulate_filters(result : list[tuple[str,str]]) -> None:
             # if we find a letter we were "searching for" we remove it from the present set
             # as it's in its correct position now
             if res[0] in present: present.remove(res[0])
+            found_letters[i] = res[0]
 
     # Afterwards we check for all the other cases
     for i,res in enumerate(result):
@@ -101,20 +104,42 @@ def find_word(regex : str) -> str:
     words = list(filter(lambda word: all([p in word for p in present]), words))
     
     # in case no word matches the regex we catch the error and stop the program
-    try:
-        return random.choice(words)
-    except IndexError:
-        print(generate_regex(), present)
-        quit()
+    if len(words) == 0:
+        print('No word matches the regex')
+        print('The regex was:', regex)
+        exit()
+
+    # else, create a copy of the words list where for each word we remove the letters that we know are present or correct
+    candidate_letters = list(map(lambda word: ''.join([word[i] for i in range(5) if word[i] not in present and word[i] != found_letters[i]]), words))
+
+    # Then we count the frequency of each letter in the list 
+    frequencies = [sum([word.count(letter) for word in candidate_letters]) for letter in letters]
+    
+    # and choose the element in the list that has the highest sum of frequencies
+    # This is done so if the word is not the correct one we extract the maximum amount 
+    # of information (aka we get to eliminate more words)
+    sorted_by_freq = sorted(words, key=lambda word: sum(frequencies[letters.index(letter)] for letter in set(candidate_letters[words.index(word)])), reverse=True)
+    return sorted_by_freq[0]
 
 def save_image(browser : WebDriver) -> None:
     browser.find_element(By.CLASS_NAME, 'Board-module_board__jeoPS').screenshot('wordle.png')
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description='Wordle Solver')
+    parser.add_argument('-d', '--driver', type=str, help='Path to the chromedriver')
+    parser.add_argument('-w', '--words', type=str, help='Link to list of words to use')
+    parser.add_argument('-s', '--start', type=str, help='Starting word')
+    return parser.parse_args()
+
 def main() -> None:
+    global words
+    cmd_args : argparse.Namespace = parse_args()
+
     # You should add a "driver_path" file with the path to your chromedriver.exe
-    with open("driver_path", "r") as f:
+    with open(cmd_args.driver or "driver_path", 'r') as f:
         driver_path = f.readlines()[0].strip()
 
+    words = WordScrapper(cmd_args.words or 'https://gist.githubusercontent.com/dracos/dd0668f281e685bad51479e5acaadb93/raw/ca9018b32e963292473841fb55fd5a62176769b5/valid-wordle-words.txt').get_words()
 
     # Downloads the chromedriver.exe if 
     # chromedriver_autoinstaller.install()
@@ -174,7 +199,7 @@ def main() -> None:
     # Tries 6 words, break the loop if the word is correct
     for i in range(6):
         # Types and submits the word, the first word will always be 'steam'
-        try_word(browser, word := find_word(generate_regex()) if i != 0 else 'adieu')
+        try_word(browser, word := find_word(generate_regex()) if i != 0 else (cmd_args.start or 'adieu'))
 
         # Necessary to wait for the page to load because of animations
         # implicitly_wait didn't do the job
