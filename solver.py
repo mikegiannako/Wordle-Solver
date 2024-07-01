@@ -12,6 +12,8 @@ import random
 import string
 import argparse
 
+WORDS_URL = 'https://gist.githubusercontent.com/dracos/dd0668f281e685bad51479e5acaadb93/raw/ca9018b32e963292473841fb55fd5a62176769b5/valid-wordle-words.txt'
+
 # Gets the words from the website specified in word_scrapper.py
 from word_scrapper import WordScrapper
 words : list[str] = []
@@ -139,7 +141,7 @@ def main() -> None:
     with open(cmd_args.driver or "driver_path", 'r') as f:
         driver_path = f.readlines()[0].strip()
 
-    words = WordScrapper(cmd_args.words or 'https://gist.githubusercontent.com/dracos/dd0668f281e685bad51479e5acaadb93/raw/ca9018b32e963292473841fb55fd5a62176769b5/valid-wordle-words.txt').get_words()
+    words = WordScrapper(cmd_args.words or WORDS_URL).get_words()
 
     # Downloads the chromedriver.exe if 
     # chromedriver_autoinstaller.install()
