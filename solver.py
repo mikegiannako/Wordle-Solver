@@ -16,6 +16,7 @@ WORDS_URL = 'https://gist.githubusercontent.com/dracos/dd0668f281e685bad51479e5a
 
 # Gets the words from the website specified in word_scrapper.py
 from word_scrapper import WordScrapper
+import os
 words : list[str] = []
 
 # set of letters
@@ -131,6 +132,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('-d', '--driver', type=str, help='Path to the chromedriver')
     parser.add_argument('-w', '--words', type=str, help='Link to list of words to use')
     parser.add_argument('-s', '--start', type=str, help='Starting word')
+    parser.add_argument('-hl', '--headless', action='store_true', help='Run the browser in headless mode')
     return parser.parse_args()
 
 def main() -> None:
@@ -153,6 +155,9 @@ def main() -> None:
     options.add_argument("--disable-notifications")
     # Disable cert errors
     options.add_argument('--ignore-certificate-errors')
+    # Make the browser headless
+    if cmd_args.headless:
+        options.add_argument("--headless")
     
     # Setting the service for the browser
     service = Service(driver_path)
@@ -211,14 +216,17 @@ def main() -> None:
         result = find_row_state(browser, i)
 
         if [res[1] == 'correct' for res in result] == [True] * 5:
-            print(f'Iteration {i + 1} is correct\nThe word was {word}')
+            print(f"The word is: {word}")
             break
 
         # Adjusting the regex based on the results we just got from the most recent word
         regulate_filters(result)
+    else:
+        print("The word was not found")
 
     # Saves the completed puzzle as an image to a file named 'wordle.png' in the current directory
     save_image(browser)
+    print(f"Screenshot of the wordle saved at: {os.getcwd() + '/wordle.png'}")
 
     # Closes the browser
     browser.quit()
