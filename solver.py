@@ -224,6 +224,9 @@ def main() -> None:
     else:
         print("The word was not found")
 
+    # Scroll down until the whole board is visible
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
     # Saves the completed puzzle as an image to a file named 'wordle.png' in the current directory
     save_image(browser)
     print(f"Screenshot of the wordle saved at: {os.getcwd() + '/wordle.png'}")
