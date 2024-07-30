@@ -180,24 +180,26 @@ def main() -> None:
 
 
     try:
-        # Finding the reject cookies button
-        reject_button = browser.find_element(By.XPATH, '//*[@id="pz-gdpr-btn-reject"]')
-        # and clicking it
-        reject_button.click()
+        # Finding the reject cookies button and clicking it
+        browser.find_element(By.XPATH, '//*[@id="fides-button-group"]/div[2]/button[1]').click()
+        browser.implicitly_wait(2)
     except:
         pass
-    
-    browser.implicitly_wait(2)
+
+    sleep(1)
 
     # Clicking on the play button
-    play_button = browser.find_element(By.XPATH, '/html/body/div[2]/div/div/div/div/div[2]/button[2]')
+    play_button = browser.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div[2]/button[2]')
     # and clicking it
     play_button.click()
 
     browser.implicitly_wait(2)
 
     # Clicking on the X button to close the popup
-    browser.find_element(By.XPATH, '//*[@id="help-dialog"]/div/div/button').click()
+    try:
+        browser.find_element(By.XPATH, '//*[@id="help-dialog"]/div/div/button').click()
+    except:
+        pass
 
     # Waiting for the page to load
     sleep(2) # I had to put sleep instead of implicit wait because the implicit
