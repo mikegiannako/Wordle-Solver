@@ -180,11 +180,19 @@ def main() -> None:
 
     try:
         # Finding the reject cookies button and clicking it
-        browser.find_element(By.XPATH, '/html/body/div[1]/div/div[2]/div/div/div/div[3]/div[1]/button[1]').click()
+        browser.find_element(By.XPATH, '//*[@id="fides-button-group"]/div[1]/button[1]').click()
+        browser.implicitly_wait(2)
+    except:
+        pass
+    
+    try:
+        # Finding the updated terms of service button and clicking it
+        browser.find_element(By.XPATH, '/html/body/div[4]/div/div/button').click()
         browser.implicitly_wait(2)
     except:
         pass
 
+    sleep(1)
 
     # Clicking on the play button
     play_button = browser.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div[2]/button[2]')
