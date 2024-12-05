@@ -195,7 +195,7 @@ def main() -> None:
     sleep(1)
 
     # Clicking on the play button
-    play_button = browser.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div[2]/button[2]')
+    play_button = browser.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div[2]/button[3]')
     # and clicking it
     play_button.click()
 
