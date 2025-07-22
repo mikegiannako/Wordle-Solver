@@ -180,7 +180,7 @@ def main() -> None:
 
     try:
         # Finding the reject cookies button and clicking it
-        browser.find_element(By.XPATH, '//*[@id="fides-button-group"]/div[1]/button[1]').click()
+        browser.find_element(By.XPATH, '/html/body/div[1]/div/div[3]/div/div/div[2]/div[1]/button[3]').click()
         browser.implicitly_wait(2)
     except:
         pass
